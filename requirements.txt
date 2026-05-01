@@ -1,0 +1,10 @@
+python-dotenv
+langchain
+langchain-community
+langchainhub
+langgraph
+langchain-groq
+langchain-chroma
+langchain-tavily
+beautifulsoup4
+pytest
