@@ -8,3 +8,4 @@ langchain-chroma
 langchain-tavily
 beautifulsoup4
 pytest
+langchain-huggingface
