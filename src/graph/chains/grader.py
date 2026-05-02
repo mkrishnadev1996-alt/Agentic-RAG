@@ -15,7 +15,7 @@ Here is the user question: {question}
 Here is the retrieved document: {document}
 '''
 
-# Do not use SystemMeessage as we are using variables in the prompt. SystemMessage is meant for static instructions that do not change across different invocations of the prompt. Using variables in a SystemMessage can lead to issues with how the prompt is processed and may not work i.e vairables will not be injected and sent to the model. 
+# Do not use SystemMessage as we are using variables in the prompt. SystemMessage is meant for static instructions that do not change across different invocations of the prompt. Using variables in a SystemMessage can lead to issues with how the prompt is processed and may not work i.e variables will not be injected and sent to the model. 
 grade_doc_prompt = ChatPromptTemplate.from_messages(
     [("system", GRADE_DOC_PROMPT)]
 )

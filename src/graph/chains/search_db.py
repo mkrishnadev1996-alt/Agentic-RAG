@@ -4,7 +4,7 @@ from src.graph.llm import llm_fast
 
 class DBSearchQueries(BaseModel):
     '''
-    Class for defining the vecor DB search queries
+    Class for defining the vector DB search queries
     Attributes:
         retrieve_query: The query for doing Vector DB search
     '''
