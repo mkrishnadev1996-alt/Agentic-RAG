@@ -13,5 +13,5 @@ def db_search_query (state : GraphState):
     if state.get("question"):
         response = db_search_chain.invoke({"question": state.get("question")})
         return {
-            "search_queries": response.retrieve_query
+            "retrieve_query": response.retrieve_query
         }
