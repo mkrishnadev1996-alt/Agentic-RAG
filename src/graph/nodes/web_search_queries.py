@@ -1,8 +1,7 @@
-from src.graph.llm import llm
 from src.graph.state import GraphState
 from src.graph.chains.search import search_chain
 
-def search_queries (state : GraphState):
+def web_search_queries (state : GraphState):
     '''
     Function to generate search queries using the LLM
     Args:
