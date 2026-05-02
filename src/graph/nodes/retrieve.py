@@ -10,7 +10,7 @@ def retrieve(state: GraphState) -> Dict[str, Any]:
     Returns:
         A dictionary with the retrieved documents
     '''
-    question = state.get('question', '')
+    question = state.get('retrieve_query', '')
     if not question:
         raise ValueError("Question is required for retrieval")
     print(f"=====Retrieving documents for question: ====\n{question}")

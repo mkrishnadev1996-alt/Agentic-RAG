@@ -11,7 +11,7 @@ llm = ChatGroq(
 # Faster response times with lower quality output, suitable for generating search queries
 
 llm_fast=ChatGroq(
-    model=os.environ.get("GROQ_MODEL_FAST", "groq/compound-mini"),  # Default to a specific model if not set in .env
+    model=os.environ.get("GROQ_MODEL_FAST", "llama-3.3-70b-versatile"),  # Default to a specific model if not set in .env
     api_key=os.environ.get("GROQ_API_KEY","NONE"),
     temperature=0.2
 )
