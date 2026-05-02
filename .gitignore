@@ -3,3 +3,4 @@
 .vscode/
 __pycache__/
 chroma_db/
+__pycache__/
