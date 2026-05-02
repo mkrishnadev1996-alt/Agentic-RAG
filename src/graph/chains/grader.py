@@ -4,7 +4,7 @@ from src.graph.llm import llm
 
 # Pydantic model for the output of the grader chain
 class GraderDoc(BaseModel):
-    is_doc_relevant: bool = Field(description="Whether the document is relevant to the user question. True if relevant, False otherwise")
+    is_doc_relevant : bool = Field(description="Whether the document is relevant to the user question. True if relevant, False otherwise")
     relevance_score : int = Field(description="A score(1-10) indicating the relevance of the document to the user question")
 
 # Do not use both explicit JSON output format in the system prompt and  llm.with_structured_output and the prompt output format at the same time. 
