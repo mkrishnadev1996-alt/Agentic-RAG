@@ -16,6 +16,6 @@ def retrieved_docs_grader(state: GraphState):
             is_web_search = True
     return{
         "documents" : filtered_docs,
-        "is_websearch" : is_web_search
+        "is_web_search" : is_web_search
     }
 
