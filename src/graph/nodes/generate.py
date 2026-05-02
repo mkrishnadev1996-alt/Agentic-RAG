@@ -23,5 +23,6 @@ def generate(state: GraphState):
     })
 
     return {
-        "generation": response.answer
+        "generation": response
+
     }
