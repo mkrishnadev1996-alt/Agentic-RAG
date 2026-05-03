@@ -14,7 +14,7 @@ def route_destination(state: GraphState)-> str:
         raise ValueError("Question is required for routing")
     response = router_chain.invoke({"question": question})
     print(f"==Routing to {response.destination}==")
-    return response.destination # This will be one of ["web_search", "db_search"]
+    return response.destination # This will be one of ["do_web_search", "db_search"]
 
 def route_after_grader(state: GraphState) -> str:
     
@@ -39,11 +39,11 @@ def check_hallucination_and_relevance(state : GraphState) -> str:
         {"generation": generation,
          "question": question}).is_relevant
         if is_relevant:
-            return END
+            return "relevant and not hallucinated"
         else:
-            return "web_search"
+            return "not relevant"
     else:
-        return "generate"
+        return "hallucinated"
 
 
 graph_builder = StateGraph(state_schema=GraphState)
@@ -57,7 +57,7 @@ graph_builder.add_node("web_search",web_search)
 
 # Add Edges
 graph_builder.set_conditional_entry_point(route_destination,path_map={
-    "web_search":"web_search",
+    "do_web_search":"web_search",
     "db_search": "db_search_query"
 })
 graph_builder.add_edge("web_search","generate")
@@ -68,9 +68,9 @@ graph_builder.add_conditional_edges("retrieved_docs_grader", route_after_grader,
     "generate": "generate"
 })
 graph_builder.add_conditional_edges("generate",check_hallucination_and_relevance,path_map={
-    END: END,
-    "web_search":"web_search",
-    "generate":"generate"
+    "relevant and not hallucinated": END,
+    "not relevant":"web_search",
+    "hallucinated":"generate"
     })
 
 # Compile graph

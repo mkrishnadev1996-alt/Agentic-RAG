@@ -9,12 +9,12 @@ class RouterDestination(BaseModel):
     Attributes:
         destination: The destination for the router. It can be "web_search" to search the web or "db_search" to search the vector database
     '''
-    destination: Literal["web_search", "db_search"] = Field(description="The destination for the router. It can be 'web_search' to search the web or 'db_search' to search the vector database")
+    destination: Literal["do_web_search", "db_search"] = Field(description="The destination for the router. It can be 'web_search' to search the web or 'db_search' to search the vector database")
 
 
 router_prompt = '''You are a router that routes the user question to the appropriate destination based on the question. The possible destinations are "web_search" and "db_search". 
 The vector database is used for searching structured data related to AI , Agents, Prompt Engineering, Security related to AI,Adversarial Attacks on LLMs. The web is used for general information retrieval.
-If the question is more suitable for web search, route it to "web_search". If the question is more suitable for Vector database search, route it to "db_search". Always choose the most appropriate destination based on the user question.
+If the question is more suitable for web search, route it to "do_web_search". If the question is more suitable for Vector database search, route it to "db_search". Always choose the most appropriate destination based on the user question.
         Question: {question} '''
 
 prompt_template = ChatPromptTemplate.from_messages(
