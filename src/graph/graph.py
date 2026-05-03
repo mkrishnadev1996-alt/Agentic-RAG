@@ -22,7 +22,7 @@ def route_after_grader(state: GraphState) -> str:
         return "web_search"
     return "generate"
 
-def check_hallucination_and_relevence(state : GraphState) -> str:
+def check_hallucination_and_relevance(state : GraphState) -> str:
     question = state.get("question")
     generation = state.get("generation")
     docs =  state.get("documents")
@@ -67,7 +67,7 @@ graph_builder.add_conditional_edges("retrieved_docs_grader", route_after_grader,
     "web_search": "web_search",
     "generate": "generate"
 })
-graph_builder.add_conditional_edges("generate",check_hallucination_and_relevence,path_map={
+graph_builder.add_conditional_edges("generate",check_hallucination_and_relevance,path_map={
     END: END,
     "web_search":"web_search",
     "generate":"generate"

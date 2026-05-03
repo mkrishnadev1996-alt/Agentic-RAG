@@ -14,7 +14,7 @@ def coerce_bool(v):
 
 # Pydantic model for the output of the hallucination chain
 class HallucinationOutput(BaseModel):
-    is_hallucination: Annotated[bool, BeforeValidator(coerce_bool)]= Field(description="Booloean value whether the LLM output is hallucinated (True)or based on the context documents supplied. True if hallucination, False otherwise")
+    is_hallucination: Annotated[bool, BeforeValidator(coerce_bool)]= Field(description="Boolean value whether the LLM output is hallucinated (True)or based on the context documents supplied. True if hallucination, False otherwise")
 
 # Do not use both explicit JSON output format in the system prompt and  llm.with_structured_output and the prompt output format at the same time. 
 # It can lead to conflicts in the output parsing. Since we are using a structured output format, we should avoid including explicit instructions in the prompt about how to format the output as JSON. 
