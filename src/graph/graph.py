@@ -75,7 +75,6 @@ graph_builder.add_conditional_edges("generate",check_hallucination_and_relevance
 
 # Compile graph
 graph = graph_builder.compile()
-print(graph.get_graph().draw_mermaid_png)
 
 if __name__ == "__main__":
     # Example usage

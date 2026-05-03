@@ -38,7 +38,7 @@ Agentic-RAG/
 │   │   ├── graph.py        # Main graph builder
 │   │   └── llm.py          # LLM configuration
 │   ├── ingestion.py         # Data loading & vector store creation
-│   └── main.py
+│   └── main.py              # Application entry point
 ├── chroma_db/              # Persistent vector store (gitignored)
 ├── .env                    # Environment variables (gitignored)
 ├── pyproject.toml
@@ -106,18 +106,28 @@ PYTHONPATH=.
 
 ## Usage
 
-### Running the Graph
+### Running the Application
 
+The main entry point is `src/main.py`. It accepts a question via command-line argument or interactive input.
+
+**Using command-line argument:**
 ```bash
-python -m src.graph.graph
+python -m src.main "What is LangGraph?"
+```
+
+**Using interactive input:**
+```bash
+python -m src.main
+# Prompt will appear: Enter your question:
 ```
 
 This will:
-1. Route your question to the appropriate search method
-2. Retrieve relevant documents
-3. Generate an answer
-4. Validate for hallucination and relevance
-5. Save the graph diagram to `graph_diagram.png`
+1. Accept your question (via CLI argument or interactive prompt)
+2. Route your question to the appropriate search method
+3. Retrieve relevant documents
+4. Generate an answer
+5. Validate for hallucination and relevance
+6. Display the final answer
 
 ### Running Individual Chains
 
@@ -187,6 +197,9 @@ python -m pytest src/graph/chains/tests/test_chains.py -v
 - **Tavily** - Web search API
 
 ## Troubleshooting
+
+### Running the Application
+Use `python -m src.main` to run the application with user input support.
 
 ### Import Errors
 If you get `ModuleNotFoundError: No module named 'src'`, ensure:
