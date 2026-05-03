@@ -1,49 +1,91 @@
-from langgraph.graph import StateGraph, START,END
+from langgraph.graph import StateGraph,END
 from src.graph.state import GraphState
-from src.graph.nodes.web_search_queries import web_search_queries
+from src.graph.nodes.web_search import web_search
 from src.graph.nodes.db_search_query import db_search_query
 from src.graph.nodes.retrieved_docs_grader import retrieved_docs_grader
 from src.graph.nodes.retrieve import retrieve
 from src.graph.nodes.generate import generate
 from src.graph.chains.router import router_chain
-graph_builder = StateGraph(state_schema=GraphState)
+from src.graph.chains import hallucination, relevance
 
-def route_destination(state: GraphState):
+def route_destination(state: GraphState)-> str:
     question = state.get("question", "")
     if not question:
         raise ValueError("Question is required for routing")
     response = router_chain.invoke({"question": question})
+    print(f"==Routing to {response.destination}==")
     return response.destination # This will be one of ["web_search", "db_search"]
+
+def route_after_grader(state: GraphState) -> str:
+    
+    if state.get("is_web_search",False):
+        return "web_search"
+    return "generate"
+
+def check_hallucination_and_relevence(state : GraphState) -> str:
+    question = state.get("question")
+    generation = state.get("generation")
+    docs =  state.get("documents")
+    print("==Check  Hallucination ==")
+
+    is_hallucination= hallucination.hallucination_chain.invoke(
+        {"generation": generation,
+         "documents": docs}
+        ).is_hallucination
+    if not is_hallucination:
+        print("==Check  Relevance ==")
+
+        is_relevant = relevance.relevance_chain.invoke(
+        {"generation": generation,
+         "question": question}).is_relevant
+        if is_relevant:
+            return END
+        else:
+            return "web_search"
+    else:
+        return "generate"
+
+
+graph_builder = StateGraph(state_schema=GraphState)
+
 # Add Nodes
-graph_builder.add_node("web_search_queries", web_search_queries)
 graph_builder.add_node("db_search_query", db_search_query)
 graph_builder.add_node("retrieve", retrieve)
 graph_builder.add_node("retrieved_docs_grader", retrieved_docs_grader)
 graph_builder.add_node("generate", generate)
-# TODO add tool node for web search
+graph_builder.add_node("web_search",web_search)
 
 # Add Edges
 graph_builder.set_conditional_entry_point(route_destination,path_map={
-    "web_search":"web_search_queries",
+    "web_search":"web_search",
     "db_search": "db_search_query"
 })
-# TODO Add edge from tool node for web search to generate node
+graph_builder.add_edge("web_search","generate")
 graph_builder.add_edge("db_search_query","retrieve")
 graph_builder.add_edge("retrieve","retrieved_docs_grader")
-graph_builder.add_edge("retrieved_docs_grader","generate")
-# TODO Add hallucination, answer relevance conditional edge
-graph_builder.add_edge("generate",END)
+graph_builder.add_conditional_edges("retrieved_docs_grader", route_after_grader, path_map={
+    "web_search": "web_search",
+    "generate": "generate"
+})
+graph_builder.add_conditional_edges("generate",check_hallucination_and_relevence,path_map={
+    END: END,
+    "web_search":"web_search",
+    "generate":"generate"
+    })
 
+# Compile graph
 graph = graph_builder.compile()
+print(graph.get_graph().draw_mermaid_png)
 
 if __name__ == "__main__":
     # Example usage
+    # Save diagram
+    png_bytes = graph.get_graph().draw_mermaid_png()
+    with open("graph_diagram.png", "wb") as f:
+        f.write(png_bytes)
+    print("Graph diagram saved to graph_diagram.png")
     initial_state = {
-        "question": "What is Langgraph?",
-        "is_web_search": False
+        "question": "What is langgraph?"
     }
-    final_state = graph.invoke(
-        {
-            "question":"what is agent memory"
-        })
-    print(final_state.generation)
+    final_state = graph.invoke(initial_state)
+    print(final_state)
